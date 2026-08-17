@@ -1,0 +1,16 @@
+version: '3.8'
+services:
+  postgres:
+    image: postgres:16
+    container_name: revenda-db
+    environment:
+      POSTGRES_DB: revenda
+      POSTGRES_USER: revenda_user
+      POSTGRES_PASSWORD: revenda_pass
+    ports:
+      - "5433:5432"
+    volumes:
+      - revenda_data:/var/lib/postgresql/data
+
+volumes:
+  revenda_data:
