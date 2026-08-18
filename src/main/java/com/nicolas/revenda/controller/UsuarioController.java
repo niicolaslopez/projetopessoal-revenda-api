@@ -3,7 +3,6 @@ package com.nicolas.revenda.controller;
 import com.nicolas.revenda.dto.CriarUsuarioRequest;
 import com.nicolas.revenda.model.Usuario;
 import com.nicolas.revenda.service.UsuarioService;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
