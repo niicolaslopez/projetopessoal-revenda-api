@@ -39,6 +39,10 @@ public class JwtService {
         return extrairTodasClaims(token).getSubject();
     }
 
+    public String extrairRole(String token) {
+        return extrairTodasClaims(token).get("role", String.class);
+    }
+
     public boolean tokenValido(String token) {
         try {
             extrairTodasClaims(token);
