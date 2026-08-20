@@ -162,3 +162,44 @@ que deixaria o Hibernate alterar o banco sozinho, de forma imprevisível.
 ### Próximo passo
 27. `JwtAuthenticationFilter` — o filtro que lê o token do cabeçalho
     Authorization e valida a autenticação de fato
+28. ---
+
+## Fase 1 concluída — Veiculo
+
+### Campo definido internamente vs vindo de fora
+
+Nem todo campo de uma entidade precisa vir do `request` do cliente. Quando
+um veículo é cadastrado, `status` nunca é perguntado — o `Service` sempre
+define `StatusVeiculo.DISPONIVEL` por conta própria, porque um veículo
+recém-cadastrado sempre nasce disponível. Isso é uma regra de negócio,
+não uma limitação técnica: o `DTO` de entrada simplesmente não tem esse
+campo, então não existe nem a possibilidade de alguém "escolher" um
+status inicial diferente.
+
+### BigDecimal para dinheiro
+
+`float`/`double` têm imprecisão de arredondamento (ex: 0.1 + 0.2 não dá
+exatamente 0.3). Para valores monetários, o tipo correto em Java é
+`BigDecimal`, que representa decimais com precisão exata. No banco,
+o tipo correspondente é `NUMERIC(precisão, escala)` — ex: `NUMERIC(10,2)`
+guarda até 10 dígitos, sendo 2 depois da vírgula.
+
+### Quando devolver a entidade direto (sem Response DTO)
+
+`Usuario` e `Cliente` usam DTOs de resposta (`UsuarioResponse`,
+`ClienteResponse`) para esconder dados sensíveis. `Veiculo` não precisa
+disso — não existe campo sensível na entidade (é literalmente o produto
+que a revenda quer mostrar). Regra prática: só cria um DTO de saída
+quando existe algo específico para esconder ou reformatar; senão, é
+complexidade desnecessária.
+
+### Erro de migration silencioso — nome de arquivo errado
+
+O Flyway exige o padrão exato `V{numero}__{descricao}.sql` (dois
+underscores). Um nome fora do padrão não gera erro imediato — o Flyway
+simplesmente **ignora** o arquivo e segue em frente, avisando só numa
+linha discreta do log ("SQL migrations detected but not run"). O erro
+real só aparece depois, na validação do Hibernate, como "tabela não
+existe" — mesmo a migration existindo no projeto. Sempre conferir o
+nome do arquivo, caractere por caractere, quando uma tabela nova
+"não existe" mesmo com o SQL certo.
