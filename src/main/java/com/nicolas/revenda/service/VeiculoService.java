@@ -6,6 +6,8 @@ import com.nicolas.revenda.model.Veiculo;
 import com.nicolas.revenda.repository.VeiculoRepository;
 import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 @Service
 public class VeiculoService {
@@ -27,5 +29,22 @@ public class VeiculoService {
         return veiculoRepository.save(veiculo);
     }
 
+    public Page<Veiculo> listar(Pageable pageable) {
+        return veiculoRepository.findAll(pageable);
+
+    }
+
+    public Page<Veiculo> listarPorMarca(String marca, Pageable pageable) {
+        return veiculoRepository.findByMarca(marca, pageable);
+    }
+
+    public Page<Veiculo> listarPorModelo(String modelo, Pageable pageable) {
+        return veiculoRepository.findByModelo(modelo, pageable);
+    }
+
+    public Page<Veiculo> listarPorStatus(StatusVeiculo status, Pageable pageable) {
+        return veiculoRepository.findByStatus(status, pageable);
+    }
 
 }
+
