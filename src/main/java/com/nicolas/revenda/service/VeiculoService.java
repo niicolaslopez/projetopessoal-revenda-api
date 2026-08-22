@@ -1,13 +1,17 @@
 package com.nicolas.revenda.service;
 
 
+import com.nicolas.revenda.exception.RecursoNaoEncontradoException;
 import com.nicolas.revenda.model.StatusVeiculo;
 import com.nicolas.revenda.model.Veiculo;
 import com.nicolas.revenda.repository.VeiculoRepository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 @Service
 public class VeiculoService {
@@ -46,5 +50,10 @@ public class VeiculoService {
         return veiculoRepository.findByStatus(status, pageable);
     }
 
+    public Veiculo buscarPorId(Long id) {
+        Veiculo veiculo = veiculoRepository.findById(id)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Veiculo não encontrado"));
+        return veiculo;
+    }
 }
 

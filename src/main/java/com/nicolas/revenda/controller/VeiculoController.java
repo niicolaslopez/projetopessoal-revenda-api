@@ -56,4 +56,10 @@ public class VeiculoController {
         return ResponseEntity.ok(paginaStatus);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Veiculo> buscarPorId(@PathVariable Long id) {
+        Veiculo veiculo = veiculoService.buscarPorId(id);
+        return ResponseEntity.ok(veiculo);
+    }
+
 }
