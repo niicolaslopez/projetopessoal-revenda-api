@@ -1,6 +1,7 @@
 package com.nicolas.revenda.controller;
 
 
+import com.nicolas.revenda.dto.AtualizarVeiculoRequest;
 import com.nicolas.revenda.dto.CriarVeiculoRequest;
 import com.nicolas.revenda.model.StatusVeiculo;
 import com.nicolas.revenda.model.Veiculo;
@@ -66,6 +67,19 @@ public class VeiculoController {
     public ResponseEntity<Veiculo> arquivar(@PathVariable Long id) {
         Veiculo veiculo = veiculoService.arquivar(id);
         return ResponseEntity.ok(veiculo);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Veiculo> atualizar(@PathVariable Long id, @RequestBody AtualizarVeiculoRequest request) {
+        Veiculo novoVeiculo = veiculoService.atualizar(
+                id,
+                request.marca(),
+                request.modelo(),
+                request.ano(),
+                request.preco(),
+                request.descricao()
+        );
+        return ResponseEntity.ok(novoVeiculo);
     }
 
 }

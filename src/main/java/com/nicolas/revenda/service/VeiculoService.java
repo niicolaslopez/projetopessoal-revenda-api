@@ -61,5 +61,17 @@ public class VeiculoService {
         veiculo.setStatus(StatusVeiculo.ARQUIVADO);
         return veiculoRepository.save(veiculo);
     }
+
+    public Veiculo atualizar(Long id, String marca, String modelo, int ano, BigDecimal preco, String descricao) {
+
+        Veiculo veiculo = buscarPorId(id);
+        veiculo.setMarca(marca);
+        veiculo.setModelo(modelo);
+        veiculo.setAno(ano);
+        veiculo.setPreco(preco);
+        veiculo.setDescricao(descricao);
+
+        return veiculoRepository.save(veiculo);
+    }
 }
 
