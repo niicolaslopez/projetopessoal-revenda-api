@@ -203,3 +203,42 @@ real só aparece depois, na validação do Hibernate, como "tabela não
 existe" — mesmo a migration existindo no projeto. Sempre conferir o
 nome do arquivo, caractere por caractere, quando uma tabela nova
 "não existe" mesmo com o SQL certo.
+
+---
+
+## CRUD completo de Veiculo + Sistema Profissional
+
+### @PathVariable vs @RequestParam
+
+`@PathVariable` captura valores que fazem parte do **caminho** da URL
+(`/veiculos/5` → o `5` identifica exatamente qual recurso). `@RequestParam`
+captura valores **opcionais**, depois do `?` (`/veiculos/marca?marca=Toyota`
+→ um filtro que pode ou não ser usado). Regra prática: se o valor
+identifica o recurso, é PathVariable; se é um filtro/opção, é RequestParam.
+
+### Soft delete
+
+Em vez de apagar um registro de verdade (`DELETE FROM`), mudamos só o
+`status` para um valor como `ARQUIVADO`. Isso preserva histórico —
+importante em sistemas de negócio real, onde um registro "removido"
+ainda pode ser consultado no futuro (ex: veículo recebido de volta
+como troca anos depois).
+
+### Exceções customizadas + tratamento global
+
+Criar uma exceção própria (`extends RuntimeException`) permite diferenciar
+tipos de erro por **tipo de classe**, não por texto de mensagem — isso é
+mais seguro e explícito. Um `@RestControllerAdvice` com vários
+`@ExceptionHandler` centraliza a tradução de "exceção Java" para
+"resposta HTTP correta" (404 para não encontrado, 400 para dado inválido,
+500 genérico como rede de segurança para erros não previstos — nunca
+expondo detalhes internos do sistema pro cliente da API).
+
+### Swagger/OpenAPI
+
+Com a dependência `springdoc-openapi-starter-webmvc-ui`, a API gera
+documentação interativa sozinha, lendo as anotações dos Controllers.
+Para integrar com JWT, precisa de duas peças: `@SecurityScheme` (define
+que existe autenticação Bearer) e um `Bean` de `OpenAPI` com
+`addSecurityItem(...)` (aplica esse esquema em todos os endpoints
+automaticamente, sem anotar um por um).
