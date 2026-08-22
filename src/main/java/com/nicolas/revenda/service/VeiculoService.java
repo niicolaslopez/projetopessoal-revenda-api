@@ -55,5 +55,11 @@ public class VeiculoService {
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Veiculo não encontrado"));
         return veiculo;
     }
+
+    public Veiculo arquivar(Long id) {
+        Veiculo veiculo = buscarPorId(id);
+        veiculo.setStatus(StatusVeiculo.ARQUIVADO);
+        return veiculoRepository.save(veiculo);
+    }
 }
 

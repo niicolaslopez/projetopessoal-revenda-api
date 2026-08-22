@@ -62,4 +62,10 @@ public class VeiculoController {
         return ResponseEntity.ok(veiculo);
     }
 
+    @DeleteMapping("{id}")
+    public ResponseEntity<Veiculo> arquivar(@PathVariable Long id) {
+        Veiculo veiculo = veiculoService.arquivar(id);
+        return ResponseEntity.ok(veiculo);
+    }
+
 }
