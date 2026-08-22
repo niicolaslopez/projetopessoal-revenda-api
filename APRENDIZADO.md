@@ -242,3 +242,48 @@ Para integrar com JWT, precisa de duas peças: `@SecurityScheme` (define
 que existe autenticação Bearer) e um `Bean` de `OpenAPI` com
 `addSecurityItem(...)` (aplica esse esquema em todos os endpoints
 automaticamente, sem anotar um por um).
+
+---
+
+## Testes automatizados (JUnit + Mockito)
+
+### Por que testar automaticamente
+
+Testar manualmente (Postman/Swagger) confirma que algo funciona **hoje**.
+Testes automáticos confirmam que continua funcionando **no futuro**,
+mesmo depois de mudanças em partes relacionadas do código — sem
+depender de lembrar de testar tudo de novo manualmente toda vez.
+
+### @Mock e @InjectMocks
+
+Um `@Mock` é uma versão "de mentira" de uma dependência (ex: um
+`Repository` falso, que nunca fala com banco de verdade) — você
+controla exatamente o que ele deve devolver. `@InjectMocks` pega a
+classe real que está sendo testada (ex: `VeiculoService`) e encaixa
+os mocks disponíveis no construtor dela automaticamente. Isso permite
+testar a lógica de uma camada isoladamente, sem precisar de banco
+rodando.
+
+### when / thenReturn
+
+`when(mock.metodo(x)).thenReturn(y)` programa o comportamento do mock:
+"quando esse método for chamado com esse argumento, devolve esse
+valor". Sem programar, o mock devolve valores "vazios" por padrão
+(`null`, `Optional.empty()`, etc.) — o que também pode ser usado
+propositalmente para simular "não encontrei nada".
+
+### assertEquals e assertThrows
+
+`assertEquals(esperado, resultado)` verifica que um valor bate com o
+que era esperado (ex: status virou DISPONIVEL). `assertThrows(TipoDaExcecao.class, () -> codigo)`
+verifica que rodar aquele código realmente lança a exceção esperada —
+usado para confirmar regras de validação (email duplicado, CPF
+duplicado, recurso não encontrado).
+
+### Cobertura com propósito, não 100%
+
+Testar tudo não significa cobrir cada getter/setter — significa cobrir
+**regras de negócio e casos de erro**: validações de duplicidade,
+exceções lançadas corretamente, campos definidos automaticamente
+(como o status do veículo). É isso que realmente protege o sistema
+de quebrar silenciosamente no futuro.
