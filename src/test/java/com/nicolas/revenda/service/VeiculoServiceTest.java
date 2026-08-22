@@ -48,4 +48,18 @@ class VeiculoServiceTest {
             veiculoService.buscarPorId(999L);
         });
     }
+
+    @Test
+    void deveArquivarVeiculo() {
+        Veiculo veiculo = new Veiculo();
+        veiculo.setId(2L);
+        veiculo.setStatus(StatusVeiculo.DISPONIVEL);
+
+        when(veiculoRepository.findById(2L)).thenReturn(java.util.Optional.of(veiculo));
+        when(veiculoRepository.save(org.mockito.ArgumentMatchers.any(Veiculo.class)))
+        .thenReturn(veiculo);
+        Veiculo resultado = veiculoService.arquivar (2L);
+
+        assertEquals(StatusVeiculo.ARQUIVADO, resultado.getStatus());
+    }
 }
