@@ -35,6 +35,11 @@ public class Cliente {
     @Column(name = "criado_em", nullable = false, updatable = false)
     private LocalDateTime criadoEm;
 
+    @Enumerated(EnumType.STRING)
+
+    @Column(nullable = false, length = 21)
+    private StatusCliente status;
+
     @PrePersist
     public void prePersist(){
         this.criadoEm = LocalDateTime.now();

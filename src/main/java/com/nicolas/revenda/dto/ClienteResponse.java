@@ -1,5 +1,7 @@
 package com.nicolas.revenda.dto;
 
+import com.nicolas.revenda.model.StatusCliente;
+
 import java.time.LocalDateTime;
 
 public record ClienteResponse(
@@ -9,6 +11,7 @@ public record ClienteResponse(
         String telefone,
         String email,
         String cidade,
+        StatusCliente status,
         LocalDateTime criadoEm
 ) {
     public static ClienteResponse from(com.nicolas.revenda.model.Cliente cliente) {
@@ -19,6 +22,7 @@ public record ClienteResponse(
                 cliente.getTelefone(),
                 cliente.getEmail(),
                 cliente.getCidade(),
+                cliente.getStatus(),
                 cliente.getCriadoEm()
         );
     }

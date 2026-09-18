@@ -2,6 +2,7 @@ package com.nicolas.revenda.service;
 
 
 import com.nicolas.revenda.model.Cliente;
+import com.nicolas.revenda.model.StatusCliente;
 import com.nicolas.revenda.repository.ClienteRepository;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +28,7 @@ public class ClienteService {
         cliente.setTelefone(telefone);
         cliente.setEmail(email);
         cliente.setCidade(cidade);
+        cliente.setStatus(StatusCliente.ATIVO);
 
         return clienteRepository.save(cliente);
     }
