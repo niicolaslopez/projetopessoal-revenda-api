@@ -287,3 +287,48 @@ Testar tudo não significa cobrir cada getter/setter — significa cobrir
 exceções lançadas corretamente, campos definidos automaticamente
 (como o status do veículo). É isso que realmente protege o sistema
 de quebrar silenciosamente no futuro.
+
+---
+
+## CRUD completo e simétrico (Usuario + Cliente) + segurança contra escalada de privilégio
+
+### Soft delete estendido para Usuario e Cliente
+
+Aplicamos o mesmo padrão do Veiculo: em vez de um enum com vários
+estados, Usuario e Cliente usam um enum simples de dois valores
+(`ATIVO`/`ARQUIVADO`). Migrations com `ALTER TABLE ... ADD COLUMN
+... DEFAULT 'ATIVO'` garantem que registros já existentes recebem
+um valor válido automaticamente, sem quebrar o `NOT NULL`.
+
+### Separar operações sensíveis do PUT genérico
+
+O `AtualizarUsuarioRequest` contém apenas `nome` e `email` —
+deliberadamente **sem** `senha` e **sem** `role`. Se esses campos
+estivessem disponíveis no mesmo endpoint genérico de atualização,
+um usuário (ou um bug) poderia tentar se autopromover a ADMIN, ou
+trocar senha sem confirmar a antiga. Operações sensíveis merecem
+endpoints próprios, com suas próprias regras — nunca ficam
+"de brinde" dentro de um PUT genérico.
+
+### Restringir rotas inteiras por prefixo
+
+`.requestMatchers("/usuarios/**").hasRole("ADMIN")` usa o coringa
+`/**` para proteger não só `/usuarios`, mas qualquer sub-rota
+(`/usuarios/1`, `/usuarios/5`, etc.) com a mesma regra — sem
+precisar listar cada endpoint individualmente.
+
+### Bloquear login de contas arquivadas
+
+Arquivar um usuário (soft delete) não bloqueia login sozinho — o
+`AuthController` precisa checar isso explicitamente, antes mesmo
+de validar a senha. Sem essa checagem, uma conta "desativada"
+continuaria autenticando normalmente, o que anularia o propósito
+do soft delete para controle de acesso.
+
+### Mensagens de erro consistentes evitam vazamento de informação
+
+Mesmo com um motivo de bloqueio diferente (conta arquivada vs
+senha errada vs email inexistente), a mensagem de erro do login
+continua sendo sempre a mesma ("Email ou senha inválidos") — isso
+evita que alguém tentando adivinhar credenciais descubra, pela
+resposta, se um email existe, está arquivado, ou só errou a senha.
