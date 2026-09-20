@@ -1,14 +1,14 @@
-# Aprendizado do Projeto — Revenda de Carros API
+# Aprendizado do Projeto, Revenda de Carros API
 
 Este arquivo documenta o raciocínio por trás das decisões técnicas do projeto,
-não só o "como", mas o "porquê" de cada peça. Serve como registro de estudo
+não só o "como", mas o "por que" de cada peça. Serve como registro de estudo
 e como referência rápida para relembrar decisões tomadas.
 
 ## Arquitetura em camadas
 
 O projeto segue separação de responsabilidades em pacotes:
 
-model → entidades (representam tabelas do banco)
+Model → entidades (representam tabelas do banco)
 repository → acesso a dados (interfaces, Spring gera a implementação)
 service → regras de negócio (validações, orquestração)
 controller → endpoints HTTP (recebe requisição, delega pro service)
@@ -63,7 +63,7 @@ vira `null`, e usar um `null` como objeto real causa `NullPointerException`
 ## Injeção de dependência
 
 O Spring nunca é instanciado manualmente com `new`. Classes marcadas com
-`@Service`, `@RestController`, etc. têm suas dependências entregues
+`@Service`, `@RestController`, etc. têm a suas dependências entregues
 automaticamente pelo construtor — o Spring olha o que o construtor pede
 e entrega pronto, na inicialização da aplicação.
 
@@ -93,7 +93,7 @@ Chave secreta e tempo de expiração do JWT ficam no `application.properties`
 (via `@Value`), nunca hardcoded — permite trocar por ambiente sem recompilar,
 e evita expor a chave no histórico do Git.
 
-## Spring Security — comportamento padrão
+## Spring Security, comportamento padrão
 
 Assim que a dependência é adicionada, o Security **bloqueia tudo** por
 padrão (por isso os 401 nos primeiros testes de `/usuarios` e `/clientes`).
@@ -105,7 +105,7 @@ tradicional). A forma correta e atual é `.csrf(AbstractHttpConfigurer::disable)
 
 ## Docker + Flyway
 
-Docker isola o Postgres do sistema operacional, evitando conflitos com
+Docker isola o Postgres do sistema operacional, evitando conflito com
 instalações nativas (aprendido na prática: conflito de porta 5432 com
 um Postgres instalado por curso anterior).
 
@@ -113,11 +113,10 @@ Flyway versiona o schema via arquivos SQL numerados (`V1__...`, `V2__...`),
 cada um rodando uma única vez, na ordem. Alternativa ao `ddl-auto=update`,
 que deixaria o Hibernate alterar o banco sozinho, de forma imprevisível.
 
----
-
-## Roadmap — o que foi construído, em ordem
+## Roadmap, o que foi construído, em ordem
 
 ### Setup do ambiente
+
 1. Instalar Git, JDK 21, IntelliJ, Docker Desktop (WSL2), Node + Angular CLI
 2. Gerar projeto Spring Boot (start.spring.io): Web, JPA, PostgreSQL Driver,
    Security, Validation, Flyway, Lombok, DevTools
@@ -130,6 +129,7 @@ que deixaria o Hibernate alterar o banco sozinho, de forma imprevisível.
 7. Rodar a aplicação — Flyway aplica a migration
 
 ### Entidade Usuario
+
 8. Criar pacotes: model, repository, service, controller, dto
 9. `Role` (enum) — ADMIN, GERENTE, VENDEDOR
 10. `Usuario` (entity) — @Entity, @Table, @Id/@GeneratedValue, @Column,
@@ -142,6 +142,7 @@ que deixaria o Hibernate alterar o banco sozinho, de forma imprevisível.
 15. `UsuarioController` — POST /usuarios
 
 ### Entidade Cliente
+
 16. `V2__create_cliente_table.sql` — nome, cpf (unique), telefone,
     email (unique), cidade, criado_em
 17. `Cliente` (entity) — mesma estrutura de Usuario
@@ -151,6 +152,7 @@ que deixaria o Hibernate alterar o banco sozinho, de forma imprevisível.
 20. `CriarClienteRequest` (DTO) + `ClienteController` — POST /clientes
 
 ### Autenticação JWT
+
 21. Dependências JJWT no pom.xml (jjwt-api, jjwt-impl, jjwt-jackson)
 22. `jwt.secret` e `jwt.expiration` no application.properties
 23. `JwtService` — gerarToken, tokenValido, extrairEmail
@@ -160,11 +162,11 @@ que deixaria o Hibernate alterar o banco sozinho, de forma imprevisível.
     /auth/** e /usuarios liberados temporariamente, resto autenticado
 
 ### Próximo passo
+
 27. `JwtAuthenticationFilter` — o filtro que lê o token do cabeçalho
     Authorization e valida a autenticação de fato
-28. ---
 
-## Fase 1 concluída — Veiculo
+## Fase 1 concluída, Veiculo
 
 ### Campo definido internamente vs vindo de fora
 
@@ -204,8 +206,6 @@ existe" — mesmo a migration existindo no projeto. Sempre conferir o
 nome do arquivo, caractere por caractere, quando uma tabela nova
 "não existe" mesmo com o SQL certo.
 
----
-
 ## CRUD completo de Veiculo + Sistema Profissional
 
 ### @PathVariable vs @RequestParam
@@ -242,8 +242,6 @@ Para integrar com JWT, precisa de duas peças: `@SecurityScheme` (define
 que existe autenticação Bearer) e um `Bean` de `OpenAPI` com
 `addSecurityItem(...)` (aplica esse esquema em todos os endpoints
 automaticamente, sem anotar um por um).
-
----
 
 ## Testes automatizados (JUnit + Mockito)
 
@@ -287,8 +285,6 @@ Testar tudo não significa cobrir cada getter/setter — significa cobrir
 exceções lançadas corretamente, campos definidos automaticamente
 (como o status do veículo). É isso que realmente protege o sistema
 de quebrar silenciosamente no futuro.
-
----
 
 ## CRUD completo e simétrico (Usuario + Cliente) + segurança contra escalada de privilégio
 
