@@ -2,6 +2,7 @@ package com.nicolas.revenda.controller;
 
 import com.nicolas.revenda.dto.LoginRequest;
 import com.nicolas.revenda.dto.LoginResponse;
+import com.nicolas.revenda.model.StatusUsuario;
 import com.nicolas.revenda.model.Usuario;
 import com.nicolas.revenda.repository.UsuarioRepository;
 import com.nicolas.revenda.security.JwtService;
@@ -29,6 +30,10 @@ public class AuthController {
     public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
         Usuario usuario = usuarioRepository.findByEmail(request.email())
                 .orElseThrow(() -> new IllegalArgumentException("Email ou senha inválidos"));
+
+        if (usuario.getStatus() == StatusUsuario.ARQUIVADO) {
+            throw new IllegalArgumentException("Email ou senha inválidos");
+        }
 
         if (!passwordEncoder.matches(request.senha(), usuario.getSenha())) {
             throw new IllegalArgumentException("Email ou senha inválidos");
