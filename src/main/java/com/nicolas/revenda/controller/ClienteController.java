@@ -4,7 +4,6 @@ import com.nicolas.revenda.dto.AtualizarClienteRequest;
 import com.nicolas.revenda.dto.ClienteResponse;
 import com.nicolas.revenda.dto.CriarClienteRequest;
 import com.nicolas.revenda.model.Cliente;
-import com.nicolas.revenda.model.Veiculo;
 import com.nicolas.revenda.service.ClienteService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

@@ -38,4 +38,9 @@ public class Usuario {
     public void prePersist() {
         this.criadoEm = LocalDateTime.now();
     }
+
+    @Enumerated(EnumType.STRING)
+
+    @Column(nullable = false, length = 21)
+    private StatusUsuario status;
 }
